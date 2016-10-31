@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, session, abort ,g
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from app import app, db
-from .models import User
+from .models import User, Post
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -54,3 +54,24 @@ def load_user(id):
 @app.before_request
 def before_request():
     g.user = current_user
+
+@app.route('/posts')
+def posts():
+ 
+    return render_template('/posts.html')
+    
+    
+@app.route('/posts/create_post', methods=['GET', 'POST'])
+def create_post():
+    if request.method == 'GET':
+         return render_template('create_post.html')
+    else:
+        title = request.form['title']
+        body = request.form['body']
+        post = Post(title=title, body=body)
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('posts'))
+
+    
+    
