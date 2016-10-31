@@ -1,7 +1,7 @@
 from app import db
 
 class User(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(20), unique=True)
@@ -21,7 +21,7 @@ class User(db.Model):
         return False
  
     def get_id(self):
-        return unicode(self.id)
+        return (self.id)
 
 
     def __repr__(self):
