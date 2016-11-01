@@ -102,20 +102,22 @@ def delete(id):
 @app.route('/posts/edit/<int:id>',  methods=['GET', 'POST'])
 @login_required
 def edit(id):
+    
     post = Post.query.get(id)
-    if post is None:
-        flash('Post not found.')
-        return redirect(url_for('index'))
-        
+    
+    if request.method == 'GET':
+        return render_template("edit.html", post=Post.query.get(id), pid=id )
+            
     title = request.form['title']
     body = request.form['body']
-        
+            
     edit = Post(title=title, body=body)
-        
-    db.session.add(post)
+            
+    db.session.add(edit)
     db.session.commit()
     flash('Your post has been deleted.')
-    return redirect(url_for('index'))    
+    return redirect(url_for('index'))
+
     
     
 @app.errorhandler(404)
