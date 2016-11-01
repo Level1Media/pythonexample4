@@ -1,8 +1,13 @@
-<h1>Posts</h1> </br>
+{% block content %}
+<h2>Check out my posts!</h2>
 
-{% for post in post }
-<h3>{{ post.title}}</h3>
-
-<p>{{ post.body }}</p>
-
+<ul class="posts">
+{% for post in posts %}
+    <li class="post">
+        <h3>{{ post.title }} <small><a href="{{ url_for('delete', id=post.id) }}">Delete</a>
+            </small> </h3>
+        <p>{{ post.body }}</p>
+    </li>
 {% endfor %}
+</ul>
+{% endblock %}
