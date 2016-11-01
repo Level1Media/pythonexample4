@@ -81,8 +81,8 @@ def create_post():
 
 @app.route('/posts/<int:id>')
 def show(id):
-    post = Post.query.get(id)
-    return render_template("post.html", pid=id)
+
+    return render_template("post.html", post=Post.query.get(id), pid=id )
     
     
 @app.route('/posts/delete/<int:id>')

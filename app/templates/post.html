@@ -1,9 +1,11 @@
 {% block content %}
 <h2>Check out my posts!</h2>
-{% for post in posts %}
-        <h3>{{ post.title }} <small> </small> </h3>
-        <p>{{ post.body }}</p>
-    </li>
-{% endfor %}
+ 
+                {% if post %}
+                <h3>{{ post.title }} <small> </small> </h3>
+                <p>{{ post.body }}</p>
+            </li>
+        {% endif %} 
+        
 
 {% endblock %}
