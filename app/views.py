@@ -99,21 +99,20 @@ def delete(id):
     return redirect(url_for('index'))
     
     
-@app.route('/posts/edit/<int:id>',  methods=['GET', 'POST'])
+@app.route('/posts/<int:id>/edit',  methods=['GET', 'POST'])
 @login_required
 def edit(id):
     
-    post = Post.query.get(id)
+    postq = Post
     
     if request.method == 'GET':
-        return render_template("edit.html", post=Post.query.get(id), pid=id )
+        return render_template("edit.html", pid=id)
+    
+    update = db.session.query(postq).filter_by(id=id).one()
+    update.title =  request.form['title']
             
-    title = request.form['title']
-    body = request.form['body']
             
-    edit = Post(title=title, body=body)
-            
-    db.session.add(edit)
+    db.session.add(update)
     db.session.commit()
     flash('Your post has been deleted.')
     return redirect(url_for('index'))
