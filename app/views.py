@@ -104,13 +104,11 @@ def delete(id):
 def edit(id):
     
     postq = Post
-    
+    postr = db.session.query(postq).filter_by(id=id).one()
     if request.method == 'GET':
-        return render_template("edit.html", pid=id)
-    
+        return render_template("edit.html", pid=id, postr=postr)
     update = db.session.query(postq).filter_by(id=id).one()
     update.title =  request.form['title']
-            
             
     db.session.add(update)
     db.session.commit()
