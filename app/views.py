@@ -37,7 +37,8 @@ def login():
     if registered_user is not None and bcrypt.check_password_hash(
             registered_user.password, request.form['password']):
         
-        if registered_user is None:
+        if username and password is None or username and password != registered_user and bcrypt.check_password_hash(
+            registered_user.password):         
             flash('Invalid Username or password')
             return redirect(url_for('login'))
     session['logged_in'] = True
