@@ -108,17 +108,18 @@ def delete(id):
 @login_required
 def edit(title, body=None):
 
+    kwargs = {'title': title, 'body' : body}
 
     link = db.session.query(Post).filter_by(title = title).one()
 
 
     if request.method == 'GET':
         return render_template("edit.html", postq=link, post=link)
-    update = db.session.query(Post).filter_by(title=title, body=body)
+    update = db.session.query(Post).filter_by(title=title).one()
     update.title =  request.form['title']
     update.body = request.form['body']
 
-    db.session.add_all(update)
+    db.session.add(update)
     db.session.commit()
     flash('Your post has been updated.')
     return redirect(url_for('index'))
