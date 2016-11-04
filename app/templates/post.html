@@ -1,12 +1,11 @@
 {% block content %}
+	<h2>Check out my posts!</h2>
+	
+	{% if post %}
+		<h3>{{ post.title }} <small> </small> </h3>
+		<p>{{ post.body }}</p>
+	</li>
+{% endif %}
+<small><a href ="{{ url_for('edit', title=post.title) }}">Edit Post</a></small>
 
-<h2>Check out my posts!</h2>
- 
-                {% if post %}
-                <h3>{{ post.title }} <small> </small> </h3>
-                <p>{{ post.body }}</p>
-            </li>
-        {% endif %} 
- <small><a href ="{{ url_for('edit', id=post.id) }}">Edit Post</a></small>       
- 
 {% endblock %}

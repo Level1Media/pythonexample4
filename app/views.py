@@ -32,10 +32,11 @@ def login():
         return render_template('login.html')
 
     username = session['username'] = request.form['username']
-    password = request.form['password']
+    password = session['password'] =request.form['password']
     registered_user = User.query.filter_by(username=username,password=password).first()
+    
     if registered_user is None:
-        flash('Username or Password is invalid' , 'error')
+        flash('Invalid Username or password')
         return redirect(url_for('login'))
     login_user(registered_user)
     flash('Logged in successfully')
@@ -44,6 +45,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
+    session.pop('username', None)
     return redirect(url_for('index')) 
 
 
@@ -79,10 +81,12 @@ def create_post():
 
 
 
-@app.route('/posts/<int:id>')
+@app.route('/posts/<title>')
 @login_required
-def show(id):
-    return render_template("post.html", post=Post.query.get(id), pid=id )
+def show(title):
+ 
+    link = db.session.query(Post).filter_by(title = title).one()
+    return render_template("post.html", post=link, pid=id, link=title)
     
     
 @app.route('/posts/delete/<int:id>')
@@ -99,21 +103,24 @@ def delete(id):
     return redirect(url_for('index'))
     
     
-@app.route('/posts/<int:id>/edit',  methods=['GET', 'POST'])
+@app.route('/posts/<title>/edit',  methods=['GET', 'POST'])
 @login_required
-def edit(id):
-    
-    postq = Post
-    postr = db.session.query(postq).filter_by(id=id).one()
+def edit(title,body=None):
+
+
+    link = db.session.query(Post).filter_by(title = title).one()
+
+
     if request.method == 'GET':
-        return render_template("edit.html", pid=id, postr=postr)
-    update = db.session.query(postq).filter_by(id=id).one()
+        return render_template("edit.html", postq=link, post=link)
+    update = db.session.query(Post).filter_by(title = title)
     update.title =  request.form['title']
-            
+
     db.session.add(update)
     db.session.commit()
-    flash('Your post has been deleted.')
+    flash('Your post has been updated.')
     return redirect(url_for('index'))
+
 
     
     

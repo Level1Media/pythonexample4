@@ -1,5 +1,7 @@
 from app import db
 
+
+
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
@@ -13,6 +15,7 @@ class User(db.Model):
 
     def is_authenticated(self):
         return True
+
  
     def is_active(self):
         return True
@@ -34,10 +37,10 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80))
     body = db.Column(db.Text)
+
     
     
     def __init__(self, title, body):
         self.title = title
         self.body = body
-        
-        
+

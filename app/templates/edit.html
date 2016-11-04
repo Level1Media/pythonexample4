@@ -1,19 +1,16 @@
 <h1>Edit</h1>
-
-<form method="POST" action="{{ url_for('edit', id=pid) }}">
-    <label>Edit Title</label></br>
-    
-
-    <input type="text" name="title" value="{{ request.form.get('title', postr.title) }}"></br>
-    <label> Edit Body</label></br>
-   
-   
-         <label for="Content" class="col-sm-2 control-label">Content</label>
-              <div class="col-sm-10">
-                <textarea class="form-control" id="content" name="content" style="height: 300px;">{{ request.form.get('title', postr.body) }}</textarea>
-              </div>   
-   
-    <input type="submit" value="Create">
-    
-
+<form method="POST" action="{{ url_for('edit', title=post.title) }}">
+	<label>Edit Title</label></br>
+	
+	<input type="text" name="title" value="{{ request.form.get('title', post.title) }}"></br>
+	<label> Edit Body</label></br>
+	
+	
+	<label for="Content" class="col-sm-2 control-label">Content</label>
+	<div class="col-sm-10">
+		<textarea class="form-control" id="content" name="content" style="height: 300px;">{{ request.form.get('title', post.body) }}</textarea>
+	</div>
+	
+	<input type="submit" value="Create">
+	
 </form>

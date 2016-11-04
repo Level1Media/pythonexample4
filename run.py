@@ -1,5 +1,5 @@
-from app import app
+from app import app,db
 import os
 if __name__ == "__main__":
     app.secret_key = 'super secret key'
-    app.run(host=os.getenv('IP', '0.0.0.0'),port=int(os.getenv('PORT', 8080)))
+    app.run(debug=True)
