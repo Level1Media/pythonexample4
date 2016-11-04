@@ -1,6 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, session,escape, abort ,g
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from app import app, db
+from flask_migrate import Migrate
 from .models import User, Post
 
 login_manager = LoginManager()
@@ -105,7 +106,7 @@ def delete(id):
     
 @app.route('/posts/<title>/edit',  methods=['GET', 'POST'])
 @login_required
-def edit(title,body=None):
+def edit(title, body=None):
 
 
     link = db.session.query(Post).filter_by(title = title).one()
@@ -113,10 +114,13 @@ def edit(title,body=None):
 
     if request.method == 'GET':
         return render_template("edit.html", postq=link, post=link)
-    update = db.session.query(Post).filter_by(title = title)
+    update = db.session.query(Post).filter_by(title=title, body=body)
     update.title =  request.form['title']
+    update.body = request.form['body']
 
-    db.session.add(update)
+
+
+    db.session.add_all(update)
     db.session.commit()
     flash('Your post has been updated.')
     return redirect(url_for('index'))
