@@ -8,7 +8,7 @@
 	
 	<label for="Content" class="col-sm-2 control-label">Content</label>
 	<div class="col-sm-10">
-		<textarea class="form-control" id="content" name="content" style="height: 300px;">{{ request.form.get('title', post.body) }}</textarea>
+		<textarea class="form-control" id="body" name="body" value="{{ request.form.get('body', post.body) }}" style="height: 300px;">{{ request.form.get('title', post.body) }}</textarea>
 	</div>
 	
 	<input type="submit" value="Create">

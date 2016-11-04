@@ -118,8 +118,6 @@ def edit(title, body=None):
     update.title =  request.form['title']
     update.body = request.form['body']
 
-
-
     db.session.add_all(update)
     db.session.commit()
     flash('Your post has been updated.')
