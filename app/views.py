@@ -1,6 +1,6 @@
-from flask import render_template, flash, redirect, url_for, request, session,escape, abort ,g
+from flask import render_template, flash, redirect, url_for, request, session,escape, abort, g
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
-from app import app, db
+from app import app, db, bcrypt
 from .models import User, Post
 
 login_manager = LoginManager()
@@ -31,13 +31,16 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
 
-    username = session['username'] = request.form['username']
-    password = session['password'] =request.form['password']
-    registered_user = User.query.filter_by(username=username,password=password).first()
-    
-    if registered_user is None:
-        flash('Invalid Username or password')
-        return redirect(url_for('login'))
+    username = request.form['username']
+    password =request.form['password']
+    registered_user = User.query.filter_by(username=username).first()
+    if registered_user is not None and bcrypt.check_password_hash(
+            registered_user.password, request.form['password']):
+        
+        if registered_user is None:
+            flash('Invalid Username or password')
+            return redirect(url_for('login'))
+    session['logged_in'] = True
     login_user(registered_user)
     flash('Logged in successfully')
     return redirect(request.args.get('next') or url_for('index'))
