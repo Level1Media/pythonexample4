@@ -1,7 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, session,escape, abort ,g
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from app import app, db
-from flask_migrate import Migrate
 from .models import User, Post
 
 login_manager = LoginManager()

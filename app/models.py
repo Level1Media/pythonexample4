@@ -1,6 +1,4 @@
-from app import db
-
-
+from app import db, bcrypt
 
 
 class User(db.Model):
@@ -12,7 +10,7 @@ class User(db.Model):
 
     def __init__(self, username, password):
         self.username = username
-        self.password = password
+        self.password = bcrypt.generate_password_hash(password)
 
     def is_authenticated(self):
         return True
