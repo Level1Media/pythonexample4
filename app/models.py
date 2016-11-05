@@ -1,6 +1,5 @@
 from app import db, bcrypt
 
-
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
@@ -10,7 +9,10 @@ class User(db.Model):
 
     def __init__(self, username, password):
         self.username = username
-        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+        self.password= bcrypt.generate_password_hash(password, 10)
+
+       
+
 
     def is_authenticated(self):
         return True

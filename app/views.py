@@ -1,6 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, session,escape, abort, g
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from app import app, db, bcrypt
+
 from .models import User, Post
 
 login_manager = LoginManager()
@@ -20,10 +21,17 @@ def register():
     if request.method == 'GET':
         return render_template('register.html')
     user = User(request.form['username'] , request.form['password'] )
-    db.session.add(user)
-    db.session.commit()
-    flash('User successfully registered')
-    return redirect(url_for('index'))
+    username = request.form['username']
+    password = request.form['password']
+    storeduser = User.query.filter_by(username=username).first()
+    if storeduser is not None and storeduser.username == request.form['username']:
+        return 'User already Exist !'
+    else:
+        db.session.add(user)
+        db.session.commit()
+        flash('User successfully registered')
+        return redirect(url_for('index'))
+       
 
 
 @app.route('/login',methods=['GET','POST'])
@@ -32,24 +40,22 @@ def login():
         return render_template('login.html')
 
     username = request.form['username']
-    password =request.form['password']
-    registered_user = User.query.filter_by(username=username).first()
-    if registered_user is not None and bcrypt.check_password_hash(
-            registered_user.password, request.form['password']):
-        
-        if username and password is None or username and password != registered_user and bcrypt.check_password_hash(
-            registered_user.password):         
-            flash('Invalid Username or password')
-            return redirect(url_for('login'))
-    session['logged_in'] = True
-    login_user(registered_user)
-    flash('Logged in successfully')
-    return redirect(request.args.get('next') or url_for('index'))
+    password = request.form['password']
+    user = User.query.filter_by(username=username).first()
+    if user is not None and bcrypt.check_password_hash(user.password, request.form['password']):
+        login_user(user)
+        session['logged_in'] = True
+        flash('Logged in successfully')
+        return redirect(request.args.get('next') or url_for('index'))
+    else:    
+        flash('Invalid Username or password')
+        return redirect(url_for('login'))
+
 
 @app.route('/logout')
 def logout():
     logout_user()
-    session.pop('username', None)
+    session.pop('logged_in', None)
     return redirect(url_for('index')) 
 
 
