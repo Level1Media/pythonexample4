@@ -15,10 +15,12 @@ bcrypt = Bcrypt(app)
 sess = Session()
 sess.init_app(app)
 
-app.config['SECRET_KEY'] = 'k21ey'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join( tempfile.gettempdir(), 'test12.db')
-app.config['SESSION_TYPE'] = 'memcached'
+app.config['SECRET_KEY'] = 'redis'
+app.config['SESSION_COOKIE_HTTPONLY'] = ''
+app.config['SESSION_TYPE'] = 'sqlalchemy'
 
 
 db = SQLAlchemy(app)

@@ -12,6 +12,7 @@ login_manager.login_view = 'login'
 
 @app.route('/')
 def index():
+    session['key'] = 'value'
     return render_template('index.html', title="home")
     
     
@@ -29,27 +30,38 @@ def register():
     else:
         db.session.add(user)
         db.session.commit()
+        session['username'] = username
         flash('User successfully registered')
         return redirect(url_for('index'))
+    
+
+
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+
+
+    if g.user.is_authenticated:
+        return redirect(url_for('index'))
+    else:
+        if request.method == 'GET':
+            return render_template('login.html')
+
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user is not None and bcrypt.check_password_hash(user.password, request.form['password']):
+            login_user(user)
+            session['logged_in'] = True
+            flash('Logged in successfully')
+            return redirect(request.args.get('next') or url_for('index'))
+        else:    
+            flash('Invalid Username or password')
+            return redirect(url_for('login'))
+
+       
        
 
-
-@app.route('/login',methods=['GET','POST'])
-def login():
-    if request.method == 'GET':
-        return render_template('login.html')
-
-    username = request.form['username']
-    password = request.form['password']
-    user = User.query.filter_by(username=username).first()
-    if user is not None and bcrypt.check_password_hash(user.password, request.form['password']):
-        login_user(user)
-        session['logged_in'] = True
-        flash('Logged in successfully')
-        return redirect(request.args.get('next') or url_for('index'))
-    else:    
-        flash('Invalid Username or password')
-        return redirect(url_for('login'))
 
 
 @app.route('/logout')
