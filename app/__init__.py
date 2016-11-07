@@ -18,7 +18,7 @@ sess.init_app(app)
 
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join( tempfile.gettempdir(), 'test12.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join( tempfile.gettempdir(), 'test132.db')
 app.config['SECRET_KEY'] = 'redis'
 app.config['SESSION_COOKIE_HTTPONLY'] = ''
 app.config['SESSION_TYPE'] = 'sqlalchemy'
