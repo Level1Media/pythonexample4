@@ -1,21 +1,34 @@
 from flask import render_template, flash, redirect, url_for, request, session,escape, abort, g
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
-from app import app, db, bcrypt
-
+from app import app, db, bcrypt, slugify
+from itsdangerous import URLSafeTimedSerializer, BadSignature
 from .models import User, Post
+
+
+
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 
 login_manager.login_view = 'login'
 
+app.secret_key = 'secetttttt'
+#Login_serializer used to encryt and decrypt the cookie token for the remember
+#me option of flask-login
+login_serializer = URLSafeTimedSerializer(app.secret_key)
+
+
+
+
 
 @app.route('/')
 def index():
-    session['key'] = 'value'
-    return render_template('index.html', title="home")
+
+    user_id = (current_user.get_id() or "No User Logged In")
+    return render_template('index.html', title="home", user_id=user_id)
     
-    
+
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -36,10 +49,8 @@ def register():
     
 
 
-
 @app.route('/login', methods=['GET','POST'])
 def login():
-
 
     if g.user.is_authenticated:
         return redirect(url_for('index'))
@@ -51,6 +62,7 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
         if user is not None and bcrypt.check_password_hash(user.password, request.form['password']):
+          
             login_user(user)
             session['logged_in'] = True
             flash('Logged in successfully')
@@ -58,9 +70,6 @@ def login():
         else:    
             flash('Invalid Username or password')
             return redirect(url_for('login'))
-
-       
-       
 
 
 
@@ -84,7 +93,7 @@ def before_request():
 @app.route('/posts')
 def posts():
        
-        return render_template("posts.html", posts=Post.query.all())
+        return render_template("posts.html", posts=Post.query.all() )
     
 
     
@@ -95,21 +104,27 @@ def create_post():
     else:
         title = request.form['title']
         body = request.form['body']
-        post = Post(title=title, body=body)
+        slug = slugify(title)
+        post = Post(title=title, body=body, slug=slug)
+
         db.session.add(post)
+    
         db.session.commit()
         return redirect(url_for('posts'))
         
 
 
 
-@app.route('/posts/<title>')
+@app.route('/posts/<slug>')
 @login_required
-def show(title):
- 
-    link = db.session.query(Post).filter_by(title = title).one()
-    return render_template("post.html", post=link, pid=id, link=title)
+def show(slug):
+
     
+    post = db.session.query(Post).filter_by(slug = slug).first()
+    if post:
+        return render_template("post.html", post=post)
+
+    abort(404)
     
 @app.route('/posts/delete/<int:id>')
 @login_required
@@ -151,3 +166,5 @@ def edit(title, body=None):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+

@@ -1,4 +1,4 @@
-from app import db, bcrypt
+from app import db, bcrypt, slugify
 
 class User(db.Model):
     __tablename__ = "users"
@@ -11,7 +11,15 @@ class User(db.Model):
         self.username = username
         self.password= bcrypt.generate_password_hash(password, 10)
 
-       
+    
+    def get_auth_token(self):
+        """
+        Encode a secure token for cookie
+        """
+        data = [str(self.id), self.password]
+        return login_serializer.dumps(data)
+ 
+
 
 
     def is_authenticated(self):
@@ -38,10 +46,12 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80))
     body = db.Column(db.Text)
+    slug = db.Column(db.String(80), index=True)
+
 
     
     
-    def __init__(self, title, body):
+    def __init__(self, title, body, slug ):
         self.title = title
         self.body = body
-
+        self.slug = slugify(title)
